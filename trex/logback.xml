@@ -1,0 +1,98 @@
+<configuration>
+	<timestamp key="byDate" datePattern="yyyyMMdd"/>
+	<appender name="STDOUT"
+		class="ch.qos.logback.core.ConsoleAppender">
+		<layout class="ch.qos.logback.classic.PatternLayout">
+		
+			<Pattern>[%-5p] %d %c %M - %m%n</Pattern>
+		</layout>
+	</appender>
+   <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+    <encoder>
+      <pattern>
+        %highlight(%-5level)  %d{dd-MM-yyyy HH:mm:ss.SSS} %magenta([%thread]) %logger{36}.%M - %msg%n
+      </pattern>
+       <pattern>[%-5level] %d{dd-MM-yyyy hh:mm:ss.SSS a} [%thread]  %logger{50} - %msg%n</pattern>
+    </encoder>
+  </appender>
+
+  <root level="info">
+    <appender-ref ref="STDOUT"/>
+  </root>	
+	<appender name="FILE"
+		class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<file>/LOG_RECV_TE/TREX/LOG/trex.log</file>
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<fileNamePattern>/LOG_RECV_TE/TREX/LOG/trex.%d{yyyy-MM-dd}.log</fileNamePattern>
+		</rollingPolicy>
+		<encoder>
+			<Pattern>[%-5p] %d %c %M - %m%n</Pattern>
+			<pattern>[%-5level] %d{dd-MM-yyyy hh:mm:ss.SSS a} [%thread]  %logger{50} - %msg%n</pattern>
+		</encoder>
+	</appender>
+	<root level="info" additivity="false">
+		<appender-ref ref="STDOUT"/>
+		<appender-ref ref="FILE"></appender-ref>
+	</root>
+	
+	
+	
+	
+	
+	<!--  <appender name="MICROMETER" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>/home/kspoebsg/prankur/log/metrics.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<fileNamePattern>/home/kspoebsg/prankur/log/metrics.%d{yyyy-MM-dd}.log</fileNamePattern>
+		</rollingPolicy>
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+        <encoder>
+			<Pattern>[%-5p] %d %c %M - %m%n</Pattern>
+			<pattern>[%-5level] %d{dd-MM-yyyy hh:mm:ss.SSS a} [%thread]  %logger{50} - %msg%n</pattern>
+		</encoder>
+    </appender>
+    <logger name="io.micrometer" level="INFO">
+        <appender-ref ref="MICROMETER" />
+    </logger>
+    <root level="INFO">
+        <appender-ref ref="FILE" />
+    </root>
+	
+	
+	
+	<logger name="io.micrometer.core.instrument.push.PushMeterRegistry" level="OFF" /> -->
+	
+	
+	
+</configuration>
+
+<!-- <configuration>
+  <timestamp key="byDate" datePattern="yyyyMMdd"/>
+
+  <conversionRule conversionWord="clr" converterClass="ch.qos.logback.classic.pattern.color.ThreadColors"/>
+
+  <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+    <encoder>
+      <pattern>
+        %highlight(%-5level) %clr([%thread]){blue,red,cyan,green,yellow,white} %d{dd-MM-yyyy HH:mm:ss.SSS} %logger{36}.%M - %msg%n
+      </pattern>
+    </encoder>
+  </appender>
+
+  <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <file>/LOG_RECV/s4Pld/logs/s4pldInterface.log</file>
+    <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+      <fileNamePattern>/LOG_RECV/s4Pld/logs/s4pldInterface.%d{yyyy-MM-dd}.log</fileNamePattern>
+    </rollingPolicy>
+    <encoder>
+      <pattern>[%-5level] %d{dd-MM-yyyy hh:mm:ss.SSS a} %clr([%thread]){yellow,red} %logger{50} - %msg%n</pattern>
+    </encoder>
+  </appender>
+
+  <root level="info" additivity="false">
+    <appender-ref ref="STDOUT"/>
+    <appender-ref ref="FILE"/>
+  </root>
+</configuration>
+ -->
