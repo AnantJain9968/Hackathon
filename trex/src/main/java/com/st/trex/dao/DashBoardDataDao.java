@@ -34,26 +34,67 @@ public class DashBoardDataDao {
 	private static final Logger logger = LoggerFactory.getLogger(DashBoardDataDao.class);
 	
 	public List<DashboardData> getDashboardDataList(InputDashBoardDto inputDto) throws Exception {
-		try {
 
-			String sql = "select TO_CHAR(Insertion_Date, ?) A,status B,count(*) C\r\n" + 
+		System.out.print("dto "+inputDto);
+		Connection connection = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+//		String sql = "select TO_CHAR(Insertion_Date, ?) A, status B, count(*) C\r\n" + 
+//		"from YPAPA_Regression_Data_RTL\r\n" + 
+//		"WHERE CATEGORY LIKE DECODE(?,'ALL','%',?)\r\n" + 
+//		"AND OWNER LIKE DECODE(?,'ALL','%',?)\r\n" + 
+//		"AND Insertion_Date between TO_DATE(?, 'DD-MON-YYYY') and TO_DATE(?, 'DD-MON-YYYY')\r\n" + 
+//		"group by TO_CHAR(Insertion_Date, 'DD'), status\r\n" + 
+//		"order by A, B";
+		String sql="";
+		if(inputDto.getGranularity().equals("IW")) {
+			sql =" select TO_CHAR(Insertion_Date, 'IW') A, status B, count(*) C \r\n" + 
 					"from YPAPA_Regression_Data_RTL\r\n" + 
 					"WHERE CATEGORY LIKE DECODE(?,'ALL','%',?)\r\n" + 
 					"AND OWNER LIKE DECODE(?,'ALL','%',?)\r\n" + 
-					"AND  Insertion_Date between  TO_DATE(?, 'DD-MM-YYYY') and  TO_DATE(?, 'DD-MM-YYYY')\r\n" + 
-					"group by TO_CHAR(Insertion_Date, ?),status\r\n" + 
-					"order by A,status";
-
-			List<Map<String, Object>> backlogInfo = jdbcTemplate.queryForList(sql,
-					inputDto.getGranularity(),inputDto.getCategory(),inputDto.getCategory(),
-					inputDto.getOwner(),inputDto.getOwner(),
-					inputDto.getStartDate(),inputDto.getEndDate(),inputDto.getGranularity());
+					"AND Insertion_Date between TO_DATE(?, 'DD-MON-YYYY') and TO_DATE(?, 'DD-MON-YYYY')\r\n" + 
+					"group by TO_CHAR(Insertion_Date, 'IW'), status\r\n" + 
+					"order by A, B";
+		}
+		else if (inputDto.getGranularity().equals("MON")) {
+			sql =" select TO_CHAR(Insertion_Date, 'MON') A, status B, count(*) C \r\n" + 
+					"from YPAPA_Regression_Data_RTL\r\n" + 
+					"WHERE CATEGORY LIKE DECODE(?,'ALL','%',?)\r\n" + 
+					"AND OWNER LIKE DECODE(?,'ALL','%',?)\r\n" + 
+					"AND Insertion_Date between TO_DATE(?, 'DD-MON-YYYY') and TO_DATE(?, 'DD-MON-YYYY')\r\n" + 
+					"group by TO_CHAR(Insertion_Date, 'MON'), status\r\n" +  
+					"					order by A, B";
+		}
+		else {
+			sql =" select TO_CHAR(Insertion_Date, 'DD') A, status B, count(*) C \r\n" + 
+					"from YPAPA_Regression_Data_RTL\r\n" + 
+					"WHERE CATEGORY LIKE DECODE(?,'ALL','%',?)\r\n" + 
+					"AND OWNER LIKE DECODE(?,'ALL','%',?)\r\n" + 
+					"AND Insertion_Date between TO_DATE(?, 'DD-MON-YYYY') and TO_DATE(?, 'DD-MON-YYYY')\r\n" + 
+				    "group by TO_CHAR(Insertion_Date, 'DD'), status \r\n" + 
+					"					order by A, B";
+		}
+ 
+//		String sql ="select TO_CHAR(sysdate, 'IW') from dual";
+		try {
+			connection = hikariDataSource.getConnection();
+			ps = connection.prepareStatement(sql);
+//			ps.setString(1, "IW"); 
+//			ps.setString(1, inputDto.getGranularity()); // set the granularity parameter
+			ps.setString(1, inputDto.getCategory()); // set the category parameter
+			ps.setString(2, inputDto.getCategory()); // set the category parameter
+			ps.setString(3, inputDto.getOwner()); // set the owner parameter
+			ps.setString(4, inputDto.getOwner()); // set the owner parameter
+			ps.setString(5, inputDto.getStartDate()); // set the start date parameter
+			ps.setString(6, inputDto.getEndDate()); // set the end date parameter
+//			ps.setString(8, inputDto.getGranularity());
+			rs = ps.executeQuery();
 			Map<String, DashboardData> dashboardMap = new HashMap<>();
 
-			for (Map<String, Object> row : backlogInfo) {
-			    String dashboardName = (String) row.get("A");
-			    String seriesName = (String) row.get("B");
-			    int value = (int) row.get("C");
+			while (rs.next()) {
+			    String dashboardName = rs.getString("A");
+			    String seriesName = rs.getString("B");
+			    int value = rs.getInt("C");
 
 			    DashboardData dashboardData = dashboardMap.getOrDefault(dashboardName, new DashboardData());
 			    dashboardData.setName(dashboardName);
@@ -74,11 +115,14 @@ public class DashBoardDataDao {
 
 			List<DashboardData> dashboardList = new ArrayList<>(dashboardMap.values());
 			return dashboardList;
-		} catch (Exception e) {
+		} catch (SQLException e) {
 			e.printStackTrace();
-			logger.error("Exception in Method:getBacklogData:", e);
-			throw new Exception(e);
+		} finally {
+			DbUtils.closeQuietly(connection);
+			DbUtils.closeQuietly(ps);
+			DbUtils.closeQuietly(rs);
 		}
+		return null;
 	}
 	
 	public List<DashboardData> getDashboardDataListByCategory(InputDashBoardDto inputDto) throws Exception {

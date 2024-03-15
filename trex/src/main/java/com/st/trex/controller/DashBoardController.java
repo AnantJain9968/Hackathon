@@ -26,13 +26,7 @@ public class DashBoardController {
 	@Autowired
 	IDashboardService dashBoardService;
 	
-	/*@PostMapping(value = "/addsong")
-	ResponseEntity<String>addSong(@RequestBody Song song) throws MainException
-	{
-		String s=songService.addSong(song);
-		return new ResponseEntity<String>(s,HttpStatus.ACCEPTED);
-		
-	}*/
+
 	@GetMapping("/dashboardData")
 	ResponseEntity<List<DashboardData>>displaySong() throws MainException
 	{
@@ -63,6 +57,24 @@ public class DashBoardController {
 	{
 		System.out.println(inputDto);
 		List<DashboardData>song=dashBoardService.getDashBoardDataByType(inputDto);
+		return new ResponseEntity<List<DashboardData>>(song,HttpStatus.ACCEPTED);
+		
+	}
+	
+	@PostMapping("/getDataByCategory")
+	ResponseEntity<List<DashboardData>> getDataByCategory(@RequestBody InputDashBoardDto inputDto) throws Exception
+	{
+		System.out.println(inputDto);
+		List<DashboardData>song=dashBoardService.getDashBoardDataByCategory(inputDto);
+		return new ResponseEntity<List<DashboardData>>(song,HttpStatus.ACCEPTED);
+		
+	}
+	
+	@PostMapping("/getDataByOwner")
+	ResponseEntity<List<DashboardData>> getDataByOwner(@RequestBody InputDashBoardDto inputDto) throws Exception
+	{
+		System.out.println(inputDto);
+		List<DashboardData>song=dashBoardService.getDashBoardDataByOwner(inputDto);
 		return new ResponseEntity<List<DashboardData>>(song,HttpStatus.ACCEPTED);
 		
 	}

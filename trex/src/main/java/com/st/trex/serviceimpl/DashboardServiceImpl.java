@@ -86,4 +86,16 @@ public class DashboardServiceImpl implements IDashboardService{
 		return dashBoardDataDao.getOwners();
 	}
 
+	@Override
+	public List<DashboardData> getDashBoardDataByCategory(InputDashBoardDto inputDto) throws Exception {
+		// TODO Auto-generated method stub
+		return dashBoardDataDao.getDashboardDataListByCategory(inputDto);
+	}
+
+	@Override
+	public List<DashboardData> getDashBoardDataByOwner(InputDashBoardDto inputDto) throws Exception {
+		// TODO Auto-generated method stub
+		return dashBoardDataDao.getDashboardDataListByOwner(inputDto);
+	}
+
 }

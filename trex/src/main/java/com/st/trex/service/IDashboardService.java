@@ -14,6 +14,8 @@ public interface IDashboardService {
 	List<String> getCategories();
 	List<DashboardData> getDashBoardDataByType(InputDashBoardDto inputDto) throws Exception;
 	List<String> getOwners();
+	List<DashboardData> getDashBoardDataByCategory(InputDashBoardDto inputDto) throws Exception;
+	List<DashboardData> getDashBoardDataByOwner(InputDashBoardDto inputDto) throws Exception;
 
 
 }
