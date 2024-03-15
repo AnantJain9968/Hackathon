@@ -11,13 +11,13 @@ public class InputDashBoardDto {
 	private String granularity;
 	
 	public String getCategory() {
-		if(category==null) {
+		if(category==null || category.equals("")) {
     		return "ALL";
     	}
 		return category;
 	}
 	public String getOwner() {
-		if(owner==null) {
+		if(owner==null || owner.equals("")) {
     		return "ALL";
     	}
 		return owner;
