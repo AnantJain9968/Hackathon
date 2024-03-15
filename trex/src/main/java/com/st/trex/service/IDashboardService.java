@@ -15,4 +15,6 @@ public interface IDashboardService {
 	List<DashboardData> getDashBoardDataByType(InputDashBoardDto inputDto) throws Exception;
 	
 
+	List<DashboardData> getDashBoardData1();
+
 }
