@@ -64,7 +64,8 @@ public class DashBoardDataDao {
 					"AND OWNER LIKE DECODE(?,'ALL','%',?)\r\n" + 
 					"AND Insertion_Date between TO_DATE(?, 'DD-MON-YYYY') and TO_DATE(?, 'DD-MON-YYYY')\r\n" + 
 					"group by TO_CHAR(Insertion_Date, 'MON'), status\r\n" +  
-					"					order by A";
+					"ORDER BY TO_NUMBER(TO_CHAR(TO_DATE(TO_CHAR(Insertion_Date, 'MON'), 'MON'), 'MM')),\r\n" + 
+					"  status";
 		}
 		else {
 			sql =" select TO_CHAR(Insertion_Date, 'DD') A, status B, count(*) C \r\n" + 
