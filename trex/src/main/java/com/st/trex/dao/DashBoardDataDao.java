@@ -19,22 +19,209 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 
-
 import com.st.trex.dto.DashboardData;
 import com.st.trex.dto.InputDashBoardDto;
 import com.st.trex.dto.SeriesData;
 import com.zaxxer.hikari.HikariDataSource;
 
 @Component
-public class BackLogDataDao {
+public class DashBoardDataDao {
 	@Autowired
 	private JdbcTemplate jdbcTemplate;
 	@Autowired
 	HikariDataSource hikariDataSource;
 
-	private static final Logger logger = LoggerFactory.getLogger(BackLogDataDao.class);
+	private static final Logger logger = LoggerFactory.getLogger(DashBoardDataDao.class);
+	
+	public List<DashboardData> getDashboardDataList(InputDashBoardDto inputDto) throws Exception {
+		try {
 
-	public boolean updateBackLogData(List<BacklogData> backlogDataList, List<String> subItemIdList) throws Exception {
+			String sql = "select TO_CHAR(Insertion_Date, ?) A,status B,count(*) C\r\n" + 
+					"from YPAPA_Regression_Data_RTL\r\n" + 
+					"WHERE CATEGORY LIKE DECODE(?,'ALL','%',?)\r\n" + 
+					"AND OWNER LIKE DECODE(?,'ALL','%',?)\r\n" + 
+					"AND  Insertion_Date between  TO_DATE(?, 'DD-MM-YYYY') and  TO_DATE(?, 'DD-MM-YYYY')\r\n" + 
+					"group by TO_CHAR(Insertion_Date, ?),status\r\n" + 
+					"order by A,status";
+
+			List<Map<String, Object>> backlogInfo = jdbcTemplate.queryForList(sql,
+					inputDto.getGranularity(),inputDto.getCategory(),inputDto.getCategory(),
+					inputDto.getOwner(),inputDto.getOwner(),
+					inputDto.getStartDate(),inputDto.getEndDate(),inputDto.getGranularity());
+			Map<String, DashboardData> dashboardMap = new HashMap<>();
+
+			for (Map<String, Object> row : backlogInfo) {
+			    String dashboardName = (String) row.get("A");
+			    String seriesName = (String) row.get("B");
+			    int value = (int) row.get("C");
+
+			    DashboardData dashboardData = dashboardMap.getOrDefault(dashboardName, new DashboardData());
+			    dashboardData.setName(dashboardName);
+
+			    SeriesData seriesData = new SeriesData();
+			    seriesData.setName(seriesName);
+			    seriesData.setValue(value);
+
+			    List<SeriesData> seriesList = dashboardData.getSeries();
+			    if (seriesList == null) {
+			        seriesList = new ArrayList<>();
+			    }
+			    seriesList.add(seriesData);
+
+			    dashboardData.setSeries(seriesList);
+			    dashboardMap.put(dashboardName, dashboardData);
+			}
+
+			List<DashboardData> dashboardList = new ArrayList<>(dashboardMap.values());
+			return dashboardList;
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.error("Exception in Method:getBacklogData:", e);
+			throw new Exception(e);
+		}
+	}
+	
+	public List<DashboardData> getDashboardDataListByCategory(InputDashBoardDto inputDto) throws Exception {
+		try {
+
+			String sql = "SELECT category A, status B, COUNT(*) C \r\n" + 
+					"FROM YPAPA_Regression_Data_RTL\r\n" + 
+					"WHERE Insertion_Date BETWEEN TO_DATE(?, 'DD-MM-YYYY') AND TO_DATE(?, 'DD-MM-YYYY')\r\n" + 
+					"GROUP BY category, status\r\n" + 
+					"order by category,status";
+
+			List<Map<String, Object>> backlogInfo = jdbcTemplate.queryForList(sql,
+					inputDto.getStartDate(),inputDto.getEndDate());
+			Map<String, DashboardData> dashboardMap = new HashMap<>();
+
+			for (Map<String, Object> row : backlogInfo) {
+			    String dashboardName = (String) row.get("A");
+			    String seriesName = (String) row.get("B");
+			    int value = (int) row.get("C");
+
+			    DashboardData dashboardData = dashboardMap.getOrDefault(dashboardName, new DashboardData());
+			    dashboardData.setName(dashboardName);
+
+			    SeriesData seriesData = new SeriesData();
+			    seriesData.setName(seriesName);
+			    seriesData.setValue(value);
+
+			    List<SeriesData> seriesList = dashboardData.getSeries();
+			    if (seriesList == null) {
+			        seriesList = new ArrayList<>();
+			    }
+			    seriesList.add(seriesData);
+
+			    dashboardData.setSeries(seriesList);
+			    dashboardMap.put(dashboardName, dashboardData);
+			}
+
+			List<DashboardData> dashboardList = new ArrayList<>(dashboardMap.values());
+			return dashboardList;
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.error("Exception in Method:getBacklogData:", e);
+			throw new Exception(e);
+		}
+	}
+	
+	public List<DashboardData> getDashboardDataListByOwner(InputDashBoardDto inputDto) throws Exception {
+		try {
+
+			String sql = "SELECT owner A, status B, COUNT(*) C \r\n" + 
+					"FROM YPAPA_Regression_Data_RTL\r\n" + 
+					"WHERE Insertion_Date BETWEEN TO_DATE(?, 'DD-MM-YYYY') AND TO_DATE(?, 'DD-MM-YYYY')\r\n" + 
+					"GROUP BY owner, status\r\n" + 
+					"order by owner,status";
+
+			List<Map<String, Object>> backlogInfo = jdbcTemplate.queryForList(sql,
+					inputDto.getStartDate(),inputDto.getEndDate());
+			Map<String, DashboardData> dashboardMap = new HashMap<>();
+
+			for (Map<String, Object> row : backlogInfo) {
+			    String dashboardName = (String) row.get("A");
+			    String seriesName = (String) row.get("B");
+			    int value = (int) row.get("C");
+
+			    DashboardData dashboardData = dashboardMap.getOrDefault(dashboardName, new DashboardData());
+			    dashboardData.setName(dashboardName);
+
+			    SeriesData seriesData = new SeriesData();
+			    seriesData.setName(seriesName);
+			    seriesData.setValue(value);
+
+			    List<SeriesData> seriesList = dashboardData.getSeries();
+			    if (seriesList == null) {
+			        seriesList = new ArrayList<>();
+			    }
+			    seriesList.add(seriesData);
+
+			    dashboardData.setSeries(seriesList);
+			    dashboardMap.put(dashboardName, dashboardData);
+			}
+
+			List<DashboardData> dashboardList = new ArrayList<>(dashboardMap.values());
+			return dashboardList;
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.error("Exception in Method:getBacklogData:", e);
+			throw new Exception(e);
+		}
+	}
+	
+	public List<String> getCategories() {
+		List<String> list = new ArrayList<>();
+
+		String sql = "select DISTINCT CATEGORY from YPAPA_Regression_Data_RTL";
+
+		Connection connection = null;
+		PreparedStatement statement = null;
+		ResultSet rs = null;
+		try {
+			connection = hikariDataSource.getConnection();
+			statement = connection.prepareStatement(sql);
+			rs = statement.executeQuery();
+			while (rs.next()) {
+				list.add(rs.getString("CATEGORY"));
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			DbUtils.closeQuietly(connection);
+			DbUtils.closeQuietly(statement);
+			DbUtils.closeQuietly(rs);
+		}
+		return list;
+	}
+	
+	public List<String> getOwners() {
+		List<String> list = new ArrayList<>();
+
+		String sql = "select DISTINCT OWNER from YPAPA_Regression_Data_RTL";
+
+		Connection connection = null;
+		PreparedStatement statement = null;
+		ResultSet rs = null;
+		try {
+			connection = hikariDataSource.getConnection();
+			statement = connection.prepareStatement(sql);
+			rs = statement.executeQuery();
+			while (rs.next()) {
+				list.add(rs.getString("OWNER"));
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			DbUtils.closeQuietly(connection);
+			DbUtils.closeQuietly(statement);
+			DbUtils.closeQuietly(rs);
+		}
+		return list;
+	}
+
+
+
+	/*public boolean updateBackLogData(List<BacklogData> backlogDataList, List<String> subItemIdList) throws Exception {
 
 		String updateSql = " UPDATE SO_SCHEDULED\r\n" + "SET COMMITTED_QTY            =?,\r\n"
 				+ "  PLANT__CODE                =?,\r\n" + "  FINISHED_GOOD__CODE        =?,\r\n"
@@ -216,10 +403,10 @@ public class BackLogDataDao {
 
 					} else {
 
-						/*if (obj.getShipModeCode() != null && obj.getShipModeCode().equals("14")
+						if (obj.getShipModeCode() != null && obj.getShipModeCode().equals("14")
 								&& obj.getStatusFlagCmp().equals("INSERT")) {
 							setShipModeCodeInSkipReason(obj, shipmode14SkipReasonStatement);
-						}*/
+						}
 						if (obj.getTbaFlag() != null && obj.getTbaFlag().equals(OrderSchedulingConstant.Y)) {
 							setTbaReasonSkipReason(obj, setTbaReasonSkipReasonStatement);
 						}
@@ -355,9 +542,9 @@ public class BackLogDataDao {
 				BacklogSchedule obj = updateBacklogList.get(i);
 				if (updateCount[i] > 0) {
 
-					/*if (obj.getShipModeCode() != null && obj.getShipModeCode().equals("14")) {
+					if (obj.getShipModeCode() != null && obj.getShipModeCode().equals("14")) {
 						setShipModeCodeInSkipReason(obj, shipmode14SkipReasonStatement);
-					}*/
+					}
 					// updateHistoryProcedure(obj, updateCallableStmt);
 					updateInsertTxnOld(obj, updateInsertTxnOldStatement);
 
@@ -579,57 +766,7 @@ public class BackLogDataDao {
 
 	}
 
-	public List<DashboardData> getDashboardDataList(InputDashBoardDto inputDto) throws Exception {
-		try {
-
-			String sql = "select TO_CHAR(Insertion_Date, 'IW') week_nr,status,count(*) \r\n" + 
-					"from YPAPA_Regression_Data_RTL\r\n" + 
-					"WHERE CATEGORY LIKE DECODE(?,'ALL','%',?)\r\n" + 
-					"AND OWNER LIKE DECODE(?,'ALL','%',?)\r\n" + 
-					"group by TO_CHAR(Insertion_Date, 'IW'),status\r\n" + 
-					"order by week_nr,statusselect TO_CHAR(Insertion_Date, 'IW') week_nr,status,count(*) \r\n" + 
-					"from YPAPA_Regression_Data_RTL\r\n" + 
-					"WHERE CATEGORY LIKE DECODE(:L_Var,'ALL','%',:L_Var)\r\n" + 
-					"AND OWNER LIKE DECODE(:L_Var1,'ALL','%',:L_Var1)\r\n" + 
-					"group by TO_CHAR(Insertion_Date, 'IW'),status\r\n" + 
-					"order by week_nr,status";
-
-			List<Map<String, Object>> backlogInfo = jdbcTemplate.queryForList(sql,
-					inputDto.getCategory(),inputDto.getCategory(),inputDto.getOwner(),inputDto.getOwner(),
-					inputDto.getStartDate(),inputDto.getEndDate());
-			Map<String, DashboardData> dashboardMap = new HashMap<>();
-
-			for (Map<String, Object> row : backlogInfo) {
-			    String dashboardName = (String) row.get("dashboard_name");
-			    String seriesName = (String) row.get("series_name");
-			    int value = (int) row.get("value");
-
-			    DashboardData dashboardData = dashboardMap.getOrDefault(dashboardName, new DashboardData());
-			    dashboardData.setName(dashboardName);
-
-			    SeriesData seriesData = new SeriesData();
-			    seriesData.setName(seriesName);
-			    seriesData.setValue(value);
-
-			    List<SeriesData> seriesList = dashboardData.getSeries();
-			    if (seriesList == null) {
-			        seriesList = new ArrayList<>();
-			    }
-			    seriesList.add(seriesData);
-
-			    dashboardData.setSeries(seriesList);
-			    dashboardMap.put(dashboardName, dashboardData);
-			}
-
-			List<DashboardData> dashboardList = new ArrayList<>(dashboardMap.values());
-			return dashboardList;
-		} catch (Exception e) {
-			e.printStackTrace();
-			logger.error("Exception in Method:getBacklogData:", e);
-			throw new Exception(e);
-		}
-	}
-
+	
 	public BacklogData getBacklogData(String subItemIdList) throws Exception {
 
 		Connection connection = null;
@@ -1313,5 +1450,5 @@ public class BackLogDataDao {
 		}
 		return res;
 	}
-
+*/
 }

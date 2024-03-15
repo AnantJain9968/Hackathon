@@ -4,14 +4,20 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.st.trex.dao.DashBoardDataDao;
 import com.st.trex.dto.DashboardData;
+import com.st.trex.dto.InputDashBoardDto;
 import com.st.trex.dto.SeriesData;
 import com.st.trex.service.IDashboardService;
 
 @Service
 public class DashboardServiceImpl implements IDashboardService{
+	
+	@Autowired
+	DashBoardDataDao dashBoardDataDao;
 
 	@Override
 	public List<DashboardData> getDashBoardData() {
@@ -60,6 +66,18 @@ public class DashboardServiceImpl implements IDashboardService{
 		list.add(ww2);
 		
 		return list;
+	}
+
+	@Override
+	public List<DashboardData> getDashBoardDataByType(InputDashBoardDto inputDto) throws Exception {
+		// TODO Auto-generated method stub
+		return dashBoardDataDao.getDashboardDataList(inputDto);
+	}
+
+	@Override
+	public List<String> getCategories() {
+		// TODO Auto-generated method stub
+		return dashBoardDataDao.getCategories();
 	}
 
 }

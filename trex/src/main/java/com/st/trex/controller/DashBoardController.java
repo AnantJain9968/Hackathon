@@ -33,7 +33,7 @@ public class DashBoardController {
 		return new ResponseEntity<String>(s,HttpStatus.ACCEPTED);
 		
 	}*/
-	@GetMapping("/dashbardData")
+	@GetMapping("/dashboardData")
 	ResponseEntity<List<DashboardData>>displaySong() throws MainException
 	{
 		List<DashboardData>song=dashBoardService.getDashBoardData();
@@ -41,11 +41,19 @@ public class DashBoardController {
 		
 	}
 	
-	@GetMapping("/getDataByType")
-	ResponseEntity<List<DashboardData>> getDataByType(@RequestBody InputDashBoardDto inputDto) throws MainException
+	@GetMapping("/getCategory")
+	ResponseEntity<List<String>>getCategory() throws MainException
+	{
+		List<String>song=dashBoardService.getCategories();
+		return new ResponseEntity<List<String>>(song,HttpStatus.ACCEPTED);
+		
+	}
+	
+	@PostMapping("/getDataByType")
+	ResponseEntity<List<DashboardData>> getDataByType(@RequestBody InputDashBoardDto inputDto) throws Exception
 	{
 		System.out.println(inputDto);
-		List<DashboardData>song=dashBoardService.getDashBoardData();
+		List<DashboardData>song=dashBoardService.getDashBoardDataByType(inputDto);
 		return new ResponseEntity<List<DashboardData>>(song,HttpStatus.ACCEPTED);
 		
 	}

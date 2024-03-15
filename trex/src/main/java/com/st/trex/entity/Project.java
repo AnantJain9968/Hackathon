@@ -2,6 +2,7 @@ package com.st.trex.entity;
 
 import java.util.List;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -21,7 +22,29 @@ public class Project {
 	@GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
     
+	@Column(name = "PROJECT_NAME")
     private String name;
+	
+	@Column(name = "FREETEXT1")
+    private String freeText1;
+	
+	@Column(name = "FREETEXT2")
+    private String freeText2;
+	
+	@Column(name = "ACTIVITY_STATUS__CODE")
+    private String status;
+	
+	@Column(name = "INSERTION_DATE")
+    private String insertionDate;
+	
+	@Column(name = "INSERTING_USER")
+    private String insertingUser;
+	
+	@Column(name = "LAST_UPDATING_DATE")
+    private String lastUpdatingDate;
+	
+	@Column(name = "LAST_UPDATING_USER")
+    private String lastUpdatingUser;
     
     @ManyToMany
     @JoinTable(
