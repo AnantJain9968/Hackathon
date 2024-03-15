@@ -11,4 +11,6 @@ public interface IDashboardService {
 	
 	List<DashboardData> getDashBoardData();
 
+	List<DashboardData> getDashBoardData1();
+
 }
