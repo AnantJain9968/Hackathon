@@ -50,6 +50,14 @@ public class DashBoardController {
 		
 	}
 	
+	@GetMapping("/getOwner")
+	ResponseEntity<List<String>>getOwner() throws MainException
+	{
+		List<String>song=dashBoardService.getOwners();
+		return new ResponseEntity<List<String>>(song,HttpStatus.ACCEPTED);
+		
+	}
+	
 	@PostMapping("/getDataByType")
 	ResponseEntity<List<DashboardData>> getDataByType(@RequestBody InputDashBoardDto inputDto) throws Exception
 	{

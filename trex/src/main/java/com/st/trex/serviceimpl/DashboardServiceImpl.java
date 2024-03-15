@@ -80,4 +80,10 @@ public class DashboardServiceImpl implements IDashboardService{
 		return dashBoardDataDao.getCategories();
 	}
 
+	@Override
+	public List<String> getOwners() {
+		// TODO Auto-generated method stub
+		return dashBoardDataDao.getOwners();
+	}
+
 }

@@ -13,6 +13,7 @@ public interface IDashboardService {
 	List<DashboardData> getDashBoardData();
 	List<String> getCategories();
 	List<DashboardData> getDashBoardDataByType(InputDashBoardDto inputDto) throws Exception;
+	List<String> getOwners();
 
 
 }
