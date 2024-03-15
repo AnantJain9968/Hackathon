@@ -8,6 +8,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -54,7 +55,7 @@ public class DashBoardDataDao {
 					"AND OWNER LIKE DECODE(?,'ALL','%',?)\r\n" + 
 					"AND Insertion_Date between TO_DATE(?, 'DD-MON-YYYY') and TO_DATE(?, 'DD-MON-YYYY')\r\n" + 
 					"group by TO_CHAR(Insertion_Date, 'IW'), status\r\n" + 
-					"order by A, B";
+					"order by A";
 		}
 		else if (inputDto.getGranularity().equals("MON")) {
 			sql =" select TO_CHAR(Insertion_Date, 'MON') A, status B, count(*) C \r\n" + 
@@ -63,7 +64,7 @@ public class DashBoardDataDao {
 					"AND OWNER LIKE DECODE(?,'ALL','%',?)\r\n" + 
 					"AND Insertion_Date between TO_DATE(?, 'DD-MON-YYYY') and TO_DATE(?, 'DD-MON-YYYY')\r\n" + 
 					"group by TO_CHAR(Insertion_Date, 'MON'), status\r\n" +  
-					"					order by A, B";
+					"					order by A";
 		}
 		else {
 			sql =" select TO_CHAR(Insertion_Date, 'DD') A, status B, count(*) C \r\n" + 
@@ -72,7 +73,7 @@ public class DashBoardDataDao {
 					"AND OWNER LIKE DECODE(?,'ALL','%',?)\r\n" + 
 					"AND Insertion_Date between TO_DATE(?, 'DD-MON-YYYY') and TO_DATE(?, 'DD-MON-YYYY')\r\n" + 
 				    "group by TO_CHAR(Insertion_Date, 'DD'), status \r\n" + 
-					"					order by A, B";
+					"					order by A";
 		}
  
 //		String sql ="select TO_CHAR(sysdate, 'IW') from dual";
@@ -89,7 +90,7 @@ public class DashBoardDataDao {
 			ps.setString(6, inputDto.getEndDate()); // set the end date parameter
 //			ps.setString(8, inputDto.getGranularity());
 			rs = ps.executeQuery();
-			Map<String, DashboardData> dashboardMap = new HashMap<>();
+			Map<String, DashboardData> dashboardMap = new LinkedHashMap<>();
 
 			while (rs.next()) {
 			    String dashboardName = rs.getString("A");
@@ -215,6 +216,7 @@ public class DashBoardDataDao {
 	
 	public List<String> getCategories() {
 		List<String> list = new ArrayList<>();
+		list.add("ALL");
 
 		String sql = "select DISTINCT CATEGORY from YPAPA_Regression_Data_RTL";
 
@@ -240,6 +242,7 @@ public class DashBoardDataDao {
 	
 	public List<String> getOwners() {
 		List<String> list = new ArrayList<>();
+		list.add("ALL");
 
 		String sql = "select DISTINCT OWNER from YPAPA_Regression_Data_RTL";
 
