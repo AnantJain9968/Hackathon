@@ -61,6 +61,15 @@ public class DashBoardController {
 		
 	}
 	
+	@PostMapping("/getDataByLineType")
+	ResponseEntity<List<DashboardData>> getDataByLineType(@RequestBody InputDashBoardDto inputDto) throws Exception
+	{
+		System.out.println(inputDto);
+		List<DashboardData>song=dashBoardService.getDashBoardDataByLineType(inputDto);
+		return new ResponseEntity<List<DashboardData>>(song,HttpStatus.ACCEPTED);
+		
+	}
+	
 	@PostMapping("/getDataByCategory")
 	ResponseEntity<List<DashboardData>> getDataByCategory(@RequestBody InputDashBoardDto inputDto) throws Exception
 	{

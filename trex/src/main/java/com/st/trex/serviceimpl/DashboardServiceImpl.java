@@ -98,4 +98,10 @@ public class DashboardServiceImpl implements IDashboardService{
 		return dashBoardDataDao.getDashboardDataListByOwner(inputDto);
 	}
 
+	@Override
+	public List<DashboardData> getDashBoardDataByLineType(InputDashBoardDto inputDto) throws Exception {
+		// TODO Auto-generated method stub
+		return dashBoardDataDao.getDashboardDataListByLine(inputDto);
+	}
+
 }
