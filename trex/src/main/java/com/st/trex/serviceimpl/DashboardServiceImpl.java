@@ -104,4 +104,10 @@ public class DashboardServiceImpl implements IDashboardService{
 		return dashBoardDataDao.getDashboardDataListByLine(inputDto);
 	}
 
+	@Override
+	public List<DashboardData> getCategoryData(InputDashBoardDto inputDto) throws Exception {
+		// TODO Auto-generated method stub
+		return dashBoardDataDao.getDashboardDataListCoverage(inputDto);
+	}
+
 }
