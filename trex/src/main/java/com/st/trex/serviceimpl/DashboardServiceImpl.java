@@ -110,4 +110,10 @@ public class DashboardServiceImpl implements IDashboardService{
 		return dashBoardDataDao.getDashboardDataListCoverage(inputDto);
 	}
 
+	@Override
+	public List<String> getCoverageNames() {
+		// TODO Auto-generated method stub
+		return dashBoardDataDao.getCoverageNames();
+	}
+
 }

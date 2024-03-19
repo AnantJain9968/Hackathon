@@ -44,6 +44,14 @@ public class DashBoardController {
 		
 	}
 	
+	@GetMapping("/getCoverageNames")
+	ResponseEntity<List<String>>getCoverageNames() throws MainException
+	{
+		List<String>song=dashBoardService.getCoverageNames();
+		return new ResponseEntity<List<String>>(song,HttpStatus.ACCEPTED);
+		
+	}
+	
 	@GetMapping("/getOwner")
 	ResponseEntity<List<String>>getOwner() throws MainException
 	{

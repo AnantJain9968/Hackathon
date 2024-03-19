@@ -329,6 +329,32 @@ public class DashBoardDataDao {
 		return list;
 	}
 	
+	public List<String> getCoverageNames() {
+		List<String> list = new ArrayList<>();
+		list.add("ALL");
+
+		String sql = "select DISTINCT NAME from YPAPA_COVERAGE_DATA_RTL";
+
+		Connection connection = null;
+		PreparedStatement statement = null;
+		ResultSet rs = null;
+		try {
+			connection = hikariDataSource.getConnection();
+			statement = connection.prepareStatement(sql);
+			rs = statement.executeQuery();
+			while (rs.next()) {
+				list.add(rs.getString("NAME"));
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			DbUtils.closeQuietly(connection);
+			DbUtils.closeQuietly(statement);
+			DbUtils.closeQuietly(rs);
+		}
+		return list;
+	}
+	
 	public List<String> getOwners() {
 		List<String> list = new ArrayList<>();
 		list.add("ALL");
