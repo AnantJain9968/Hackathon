@@ -77,19 +77,18 @@ public class DashBoardDataDao {
 					"					order by A";
 		}
  
-//		String sql ="select TO_CHAR(sysdate, 'IW') from dual";
+
 		try {
 			connection = hikariDataSource.getConnection();
 			ps = connection.prepareStatement(sql);
-//			ps.setString(1, "IW"); 
-//			ps.setString(1, inputDto.getGranularity()); // set the granularity parameter
+
 			ps.setString(1, inputDto.getCategory()); // set the category parameter
 			ps.setString(2, inputDto.getCategory()); // set the category parameter
 			ps.setString(3, inputDto.getOwner()); // set the owner parameter
 			ps.setString(4, inputDto.getOwner()); // set the owner parameter
 			ps.setString(5, inputDto.getStartDate()); // set the start date parameter
 			ps.setString(6, inputDto.getEndDate()); // set the end date parameter
-//			ps.setString(8, inputDto.getGranularity());
+
 			rs = ps.executeQuery();
 			Map<String, DashboardData> dashboardMap = new LinkedHashMap<>();
 
@@ -167,19 +166,18 @@ public class DashBoardDataDao {
 					"					order by A";
 		}
  
-//		String sql ="select TO_CHAR(sysdate, 'IW') from dual";
+
 		try {
 			connection = hikariDataSource.getConnection();
 			ps = connection.prepareStatement(sql);
-//			ps.setString(1, "IW"); 
-//			ps.setString(1, inputDto.getGranularity()); // set the granularity parameter
+
 			ps.setString(1, inputDto.getCategory()); // set the category parameter
 			ps.setString(2, inputDto.getCategory()); // set the category parameter
 			ps.setString(3, inputDto.getOwner()); // set the owner parameter
 			ps.setString(4, inputDto.getOwner()); // set the owner parameter
 			ps.setString(5, inputDto.getStartDate()); // set the start date parameter
 			ps.setString(6, inputDto.getEndDate()); // set the end date parameter
-//			ps.setString(8, inputDto.getGranularity());
+
 			rs = ps.executeQuery();
 			Map<String, DashboardData> dashboardMap = new LinkedHashMap<>();
 
