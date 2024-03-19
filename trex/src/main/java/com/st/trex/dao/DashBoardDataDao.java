@@ -157,12 +157,12 @@ public class DashBoardDataDao {
 					"  NAME";
 		}
 		else {
-			sql =" select TO_CHAR(Insertion_Date, 'DD') A, NAME B, SUM(SCORE) C \r\n" + 
+			sql =" select Insertion_Date A, NAME B, SUM(SCORE) C \r\n" + 
 					"from YPAPA_COVERAGE_DATA_RTL\r\n" + 
 					"WHERE NAME LIKE DECODE(?,'ALL','%',?)\r\n" + 
 					"AND OWNER LIKE DECODE(?,'ALL','%',?)\r\n" + 
 					"AND Insertion_Date between TO_DATE(?, 'DD-MON-YYYY') and TO_DATE(?, 'DD-MON-YYYY')\r\n" + 
-				    "group by TO_CHAR(Insertion_Date, 'DD'), NAME \r\n" + 
+				    "group by Insertion_Date, NAME \r\n" + 
 					"					order by A";
 		}
  
@@ -245,12 +245,12 @@ public class DashBoardDataDao {
 					"  NAME";
 		}
 		else {
-			sql =" select NAME A,TO_CHAR(Insertion_Date, 'DD') B , SUM(SCORE) C \r\n" + 
+			sql =" select NAME A,Insertion_Date B , SUM(SCORE) C \r\n" + 
 					"from YPAPA_COVERAGE_DATA_RTL\r\n" + 
 					"WHERE NAME LIKE DECODE(?,'ALL','%',?)\r\n" + 
 					"AND OWNER LIKE DECODE(?,'ALL','%',?)\r\n" + 
 					"AND Insertion_Date between TO_DATE(?, 'DD-MON-YYYY') and TO_DATE(?, 'DD-MON-YYYY')\r\n" + 
-				    "group by TO_CHAR(Insertion_Date, 'DD'), NAME \r\n" + 
+				    "group by Insertion_Date, NAME \r\n" + 
 					"					order by B";
 		}
  
@@ -524,12 +524,12 @@ public class DashBoardDataDao {
 					"  status";
 		}
 		else {
-			sql =" select status A, TO_CHAR(Insertion_Date, 'DD') B, count(*) C \r\n" + 
+			sql =" select status A, Insertion_Date B, count(*) C \r\n" + 
 					"from YPAPA_Regression_Data_RTL\r\n" + 
 					"WHERE CATEGORY LIKE DECODE(?,'ALL','%',?)\r\n" + 
 					"AND OWNER LIKE DECODE(?,'ALL','%',?)\r\n" + 
 					"AND Insertion_Date between TO_DATE(?, 'DD-MON-YYYY') and TO_DATE(?, 'DD-MON-YYYY')\r\n" + 
-				    "group by TO_CHAR(Insertion_Date, 'DD'), status \r\n" + 
+				    "group by Insertion_Date, status \r\n" + 
 					"					order by B";
 		}
  
