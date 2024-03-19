@@ -68,12 +68,12 @@ public class DashBoardDataDao {
 					"  status";
 		}
 		else {
-			sql =" select TO_CHAR(Insertion_Date, 'DD') A, status B, count(*) C \r\n" + 
+			sql =" select Insertion_Date A, status B, count(*) C \r\n" + 
 					"from YPAPA_Regression_Data_RTL\r\n" + 
 					"WHERE CATEGORY LIKE DECODE(?,'ALL','%',?)\r\n" + 
 					"AND OWNER LIKE DECODE(?,'ALL','%',?)\r\n" + 
 					"AND Insertion_Date between TO_DATE(?, 'DD-MON-YYYY') and TO_DATE(?, 'DD-MON-YYYY')\r\n" + 
-				    "group by TO_CHAR(Insertion_Date, 'DD'), status \r\n" + 
+				    "group by Insertion_Date, status \r\n" + 
 					"					order by A";
 		}
  
