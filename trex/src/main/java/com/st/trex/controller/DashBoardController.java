@@ -68,6 +68,14 @@ public class DashBoardController {
 		
 	}
 	
+	@GetMapping("/getCoverageDataByLine")
+	ResponseEntity<List<DashboardData>>getCoverageDataByLine(@RequestBody InputDashBoardDto inputDto) throws Exception
+	{
+		List<DashboardData>song=dashBoardService.getCoverageDataByLine(inputDto);
+		return new ResponseEntity<List<DashboardData>>(song,HttpStatus.ACCEPTED);
+		
+	}
+	
 	@PostMapping("/getDataByType")
 	ResponseEntity<List<DashboardData>> getDataByType(@RequestBody InputDashBoardDto inputDto) throws Exception
 	{

@@ -122,4 +122,10 @@ public class DashboardServiceImpl implements IDashboardService{
 		return dashBoardDataDao.getCoverageOwners();
 	}
 
+	@Override
+	public List<DashboardData> getCoverageDataByLine(InputDashBoardDto inputDto) throws Exception {
+		// TODO Auto-generated method stub
+		return dashBoardDataDao.getDashboardDataListCoverageByLine(inputDto);
+	}
+
 }

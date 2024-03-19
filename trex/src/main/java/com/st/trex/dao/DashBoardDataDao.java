@@ -215,6 +215,94 @@ public class DashBoardDataDao {
 		return null;
 	}
 	
+	public List<DashboardData> getDashboardDataListCoverageByLine(InputDashBoardDto inputDto) throws Exception {
+
+		System.out.print("dto "+inputDto);
+		Connection connection = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+
+		String sql="";
+		if(inputDto.getGranularity().equals("IW")) {
+			sql =" select NAME A,TO_CHAR(Insertion_Date, 'IW') B, SUM(SCORE) C \r\n" + 
+					"from YPAPA_COVERAGE_DATA_RTL\r\n" + 
+					"WHERE NAME LIKE DECODE(?,'ALL','%',?)\r\n" + 
+					"AND OWNER LIKE DECODE(?,'ALL','%',?)\r\n" + 
+					"AND Insertion_Date between TO_DATE(?, 'DD-MON-YYYY') and TO_DATE(?, 'DD-MON-YYYY')\r\n" + 
+					"group by TO_CHAR(Insertion_Date, 'IW'), NAME\r\n" + 
+					"order by B";
+		}
+		else if (inputDto.getGranularity().equals("MON")) {
+			sql ="  SELECT NAME A,TO_CHAR(Insertion_Date, 'MON') B,\r\n" +
+					"  SUM(SCORE) C\r\n" + 
+					"FROM YPAPA_COVERAGE_DATA_RTL\r\n" + 
+					"WHERE NAME LIKE DECODE(?,'ALL','%',?)\r\n" + 
+					"AND OWNER LIKE DECODE(?,'ALL','%',?)\r\n" + 
+					"AND Insertion_Date between TO_DATE(?, 'DD-MON-YYYY') and TO_DATE(?, 'DD-MON-YYYY')\r\n" + 
+					"GROUP BY TO_CHAR(Insertion_Date, 'MON'),\r\n" + 
+					"  NAME\r\n" + 
+					"ORDER BY TO_NUMBER(TO_CHAR(TO_DATE(TO_CHAR(Insertion_Date, 'MON'), 'MON'), 'MM')),\r\n" + 
+					"  NAME";
+		}
+		else {
+			sql =" select NAME A,TO_CHAR(Insertion_Date, 'DD') B , SUM(SCORE) C \r\n" + 
+					"from YPAPA_COVERAGE_DATA_RTL\r\n" + 
+					"WHERE NAME LIKE DECODE(?,'ALL','%',?)\r\n" + 
+					"AND OWNER LIKE DECODE(?,'ALL','%',?)\r\n" + 
+					"AND Insertion_Date between TO_DATE(?, 'DD-MON-YYYY') and TO_DATE(?, 'DD-MON-YYYY')\r\n" + 
+				    "group by TO_CHAR(Insertion_Date, 'DD'), NAME \r\n" + 
+					"					order by B";
+		}
+ 
+
+		try {
+			connection = hikariDataSource.getConnection();
+			ps = connection.prepareStatement(sql);
+
+			ps.setString(1, inputDto.getCategory()); // set the category parameter
+			ps.setString(2, inputDto.getCategory()); // set the category parameter
+			ps.setString(3, inputDto.getOwner()); // set the owner parameter
+			ps.setString(4, inputDto.getOwner()); // set the owner parameter
+			ps.setString(5, inputDto.getStartDate()); // set the start date parameter
+			ps.setString(6, inputDto.getEndDate()); // set the end date parameter
+
+			rs = ps.executeQuery();
+			Map<String, DashboardData> dashboardMap = new LinkedHashMap<>();
+
+			while (rs.next()) {
+			    String dashboardName = rs.getString("A");
+			    String seriesName = rs.getString("B");
+			    int value = rs.getInt("C");
+
+			    DashboardData dashboardData = dashboardMap.getOrDefault(dashboardName, new DashboardData());
+			    dashboardData.setName(dashboardName);
+
+			    SeriesData seriesData = new SeriesData();
+			    seriesData.setName(seriesName);
+			    seriesData.setValue(value);
+
+			    List<SeriesData> seriesList = dashboardData.getSeries();
+			    if (seriesList == null) {
+			        seriesList = new ArrayList<>();
+			    }
+			    seriesList.add(seriesData);
+
+			    dashboardData.setSeries(seriesList);
+			    dashboardMap.put(dashboardName, dashboardData);
+			}
+
+			List<DashboardData> dashboardList = new ArrayList<>(dashboardMap.values());
+			return dashboardList;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			DbUtils.closeQuietly(connection);
+			DbUtils.closeQuietly(ps);
+			DbUtils.closeQuietly(rs);
+		}
+		return null;
+	}
+	
 	public List<DashboardData> getDashboardDataListByCategory(InputDashBoardDto inputDto) throws Exception {
 		try {
 
